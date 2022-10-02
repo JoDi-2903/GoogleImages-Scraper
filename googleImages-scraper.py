@@ -18,7 +18,7 @@ import os
 # Configure Parameters
 # ********************
 labels = ['parsley', 'chives']
-additionalSearchTerms = ['', 'plant', 'leaves', 'garden']
+additionalSearchTerms = [''] #, 'plant', 'leaves', 'garden'
 maxImagesPerSearchTerm = 10
 delay = 0.3
 downloadPath = 'images/'
@@ -67,7 +67,6 @@ def main():
             pathForImage = directoryPath + lbl + '/'
             fileName = lbl + '_' + str(i+1)
             downloadImage(url, pathForImage, fileName, verbose=True)
-            time.sleep(delay)
 
     # Close driver for Chrome
     wd.quit()
