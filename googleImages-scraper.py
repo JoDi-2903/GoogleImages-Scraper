@@ -5,21 +5,21 @@
 # Last change:   02.10.2022
 
 import io
+import time
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+import urllib.request
 from urllib.error import HTTPError
-from urllib.request import urlretrieve
 from datetime import datetime
-import io
-import time
-import os
+
 
 # Configure Parameters
 # ********************
 labels = ['parsley', 'chives']
 additionalSearchTerms = [''] #, 'plant', 'leaves', 'garden'
-maxImagesPerSearchTerm = 10
+maxImagesPerSearchTerm = 25
 delay = 0.3
 downloadPath = 'images/'
 # This script uses Selenium for automatic control of the Chrome browser. Please download the appropriate version here https://chromedriver.chromium.org/downloads and specify the path.
@@ -60,7 +60,7 @@ def main():
             # Collect all original source links of the found images
             collectedURLs = collectedURLs.union(
                 getImageURLsFromGoogle(wd, delay, url, maxImagesPerSearchTerm))
-            # print(collectedURLs)    # Debug
+            print(f'label: {lbl}, addTerm: {addTerm}, collectedURLs: {collectedURLs}')    # Debug
 
         # Download the collected URLs for the current label
         for i, url in enumerate(collectedURLs):
@@ -118,7 +118,11 @@ def getImageURLsFromGoogle(wd, delay, url, maxImages):
 # Downloads the image from a given WebURL
 def downloadImage(url, pathForImage, fileName, verbose):
     try:
-        urlretrieve(url, pathForImage + fileName + '.jpg')
+        # Use headers to prevent HTTP 403 errors, occuring on some downloads. Ref: https://stackoverflow.com/a/45358832/6064933
+        opener = urllib.request.build_opener()
+        opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7')]
+        urllib.request.install_opener(opener)
+        urllib.request.urlretrieve(url, pathForImage + fileName + '.jpg')
         if verbose == True:
             time = datetime.now()
             curr_time = time.strftime('%H:%M:%S')
@@ -126,9 +130,13 @@ def downloadImage(url, pathForImage, fileName, verbose):
     except FileNotFoundError as err:
         # something wrong with local path
         print(f'Unable to save image due to\n: {str(err)}')
+        print(f'File path and name of the image: {pathForImage + fileName}')
     except HTTPError as err:
         # something wrong with url
         print(f'Unable to download image due to\n: {str(err)}')
+        print(f'URL of the image: {url}')
+
+    return None
 
 
 # Write functions in any order
