@@ -2,6 +2,7 @@
 Tool to download images from Google Image Search based on given set of keywords for training machine learning models.
 <br/>
 <h2>Description</h2>
+The "GoogleImages-Scraper" is a tool for automatic download of photos from Google Image Search. The script downloads and saves the photos sorted by labels and is suitable for generating training data for machine learning models. The parameters can be used to configure different labels, search term combinations, maximum number of images, delay as well as the download path. The photos are sorted by their labels into subfolders.
 
 <h2>Example configuration for parameters</h2>
 
