@@ -2,9 +2,8 @@
 # *******************************
 # Author:        Jonathan Diebel
 # Creation date: 30.09.2022
-# Last change:   02.10.2022
+# Last change:   03.10.2022
 
-import io
 import time
 import os
 from selenium import webdriver
@@ -18,9 +17,9 @@ from datetime import datetime
 # Configure Parameters
 # ********************
 labels = ['parsley', 'chives']
-additionalSearchTerms = [''] #, 'plant', 'leaves', 'garden'
-maxImagesPerSearchTerm = 25
-delay = 0.3
+additionalSearchTerms = ['', 'plant', 'leaves', 'garden']
+maxImagesPerSearchTerm = 10
+delay = 0.2
 downloadPath = 'images/'
 # This script uses Selenium for automatic control of the Chrome browser. Please download the appropriate version here https://chromedriver.chromium.org/downloads and specify the path.
 webdriverPath = 'F:/Development/GoogleImages-Scraper/chromedriver/chromedriver.exe'
@@ -51,7 +50,13 @@ def main():
     # Set up driver for Chrome
     wd = webdriver.Chrome(webdriverPath)
     wd.get('https://www.google.com/')
-
+    # Close the cookie message if it is shown
+    try:
+        cookieButton = wd.find_element(By.ID, "W0wltc")
+        cookieButton.click()
+        print("Cookie message closed")
+    except:
+        pass
 
     # Open google image-search and search for label
     collectedURLs = set()
@@ -61,9 +66,8 @@ def main():
             combinedSearchTerm = (lbl + ' ' + addTerm).replace(' ', '+')
             url = 'https://www.google.com/search?tbm=isch&q=' + str(combinedSearchTerm) + '&hl=en'
             # Collect all original source links of the found images
-            collectedURLs = collectedURLs.union(
-                getImageURLsFromGoogle(wd, delay, url, maxImagesPerSearchTerm))
-            print(f'label: {lbl}, addTerm: {addTerm}, collectedURLs: {collectedURLs}')    # Debug
+            collectedURLs = collectedURLs.union(getImageURLsFromGoogle(wd, delay, url, maxImagesPerSearchTerm))
+            #print(f'label: {lbl}, addTerm: {addTerm}, collectedURLs: {collectedURLs}')    # Debug
 
         # Download the collected URLs for the current label
         for i, url in enumerate(collectedURLs):
@@ -85,6 +89,15 @@ def getImageURLsFromGoogle(wd, delay, url, maxImages):
     def scroll_down(wd):
         wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(delay)
+
+        # Click "Show more results" button if it exists
+        try:
+            loadMoreButton = wd.find_element(By.CLASS_NAME, "mye4qd")
+            loadMoreButton.click()
+            print("'Show more results' button found")
+        except:
+            #print("No 'Show more results' button found")   # Debug
+            pass
 
     # Open URL in controlled browser window
     url = url
