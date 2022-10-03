@@ -50,13 +50,16 @@ def main():
 
     # Set up driver for Chrome
     wd = webdriver.Chrome(webdriverPath)
+    wd.get('https://www.google.com/')
+
 
     # Open google image-search and search for label
+    collectedURLs = set()
     for lbl in labels:
-        collectedURLs = set()
+        collectedURLs.clear()
         for addTerm in additionalSearchTerms:
             combinedSearchTerm = (lbl + ' ' + addTerm).replace(' ', '+')
-            url = 'https://www.google.de/search?q=' + str(combinedSearchTerm) + '&hl=en&sclient=img&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiZ9t3H1sH6AhXTUOUKHU0HDH4Q_AUoAXoECAEQAw&biw=1515&bih=1304'
+            url = 'https://www.google.com/search?tbm=isch&q=' + str(combinedSearchTerm) + '&hl=en'
             # Collect all original source links of the found images
             collectedURLs = collectedURLs.union(
                 getImageURLsFromGoogle(wd, delay, url, maxImagesPerSearchTerm))
@@ -84,32 +87,35 @@ def getImageURLsFromGoogle(wd, delay, url, maxImages):
         time.sleep(delay)
 
     # Open URL in controlled browser window
+    url = url
     wd.get(url)
 
     # Loop over images and collect URLs
     imageURLs = set()
-    skippedImages = 0
+    skips = 0
 
-    while len(imageURLs) + skippedImages < maxImages:
+    while len(imageURLs) + skips < maxImages:
         scroll_down(wd)
         thumbnails = wd.find_elements(By.CLASS_NAME, "Q4LuWd")
 
-        for img in thumbnails[len(imageURLs) + skippedImages:maxImages]:
+        # Loop through each of the thumbnail images
+        for img in thumbnails[len(imageURLs) + skips:maxImages]:
             try:
                 img.click()
                 time.sleep(delay)
             except:
                 continue
 
+            # Source the image URL link
             images = wd.find_elements(By.CLASS_NAME, "n3VNCb")
-            for image in images:
-                if image.get_attribute('src') in imageURLs:
+            for img in images:
+                if img.get_attribute('src') in imageURLs:
                     maxImages += 1
-                    skippedImages += 1
+                    skips += 1
                     break
 
-                if image.get_attribute('src') and 'http' in image.get_attribute('src'):
-                    imageURLs.add(image.get_attribute('src'))
+                if img.get_attribute('src') and 'http' in img.get_attribute('src'):
+                    imageURLs.add(img.get_attribute('src'))
 
     return imageURLs
 
