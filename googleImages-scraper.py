@@ -2,7 +2,7 @@
 # *******************************
 # Author:        Jonathan Diebel
 # Creation date: 30.09.2022
-# Last change:   03.10.2022
+# Last change:   08.10.2022
 
 import time
 import os
@@ -19,6 +19,7 @@ from datetime import datetime
 labels = ['parsley', 'chives']
 additionalSearchTerms = ['', 'plant', 'leaves', 'garden']
 maxImagesPerSearchTerm = 10
+searchLanguage = 'en'
 delay = 0.2
 downloadPath = 'images/'
 # This script uses Selenium for automatic control of the Chrome browser. Please download the appropriate version here https://chromedriver.chromium.org/downloads and specify the path.
@@ -64,7 +65,7 @@ def main():
         collectedURLs.clear()
         for addTerm in additionalSearchTerms:
             combinedSearchTerm = (lbl + ' ' + addTerm).replace(' ', '+')
-            url = 'https://www.google.com/search?tbm=isch&q=' + str(combinedSearchTerm) + '&hl=en'
+            url = 'https://www.google.com/search?tbm=isch&q=' + str(combinedSearchTerm) + '&hl=' + str(searchLanguage)
             # Collect all original source links of the found images
             collectedURLs = collectedURLs.union(getImageURLsFromGoogle(wd, delay, url, maxImagesPerSearchTerm))
             #print(f'label: {lbl}, addTerm: {addTerm}, collectedURLs: {collectedURLs}')    # Debug
