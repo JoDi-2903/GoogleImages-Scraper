@@ -21,6 +21,7 @@ webdriverPath = 'F:/Development/GoogleImages-Scraper/chromedriver/chromedriver.e
 * selenium 4.5.0 
 * urllib3 1.26.12 
 * DateTime 4.7
+* func-timeout 4.3.5
 
 The `requirements.txt` file should list all Python libraries that your notebooks
 depend on, and they will be installed using:
