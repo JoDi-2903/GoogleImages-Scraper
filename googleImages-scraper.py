@@ -4,6 +4,7 @@
 # Creation date: 30.09.2022
 # Last change:   08.10.2022
 
+from fileinput import filename
 import time
 import os
 from selenium import webdriver
@@ -12,6 +13,7 @@ from selenium.webdriver.common.keys import Keys
 import urllib.request
 from urllib.error import HTTPError
 from datetime import datetime
+import func_timeout
 
 
 # Configure Parameters
@@ -21,7 +23,7 @@ additionalSearchTerms = ['', 'plant', 'leaves', 'garden']
 maxImagesPerSearchTerm = 10
 searchLanguage = 'en'
 delay = 0.2
-downloadPath = 'images/'
+downloadPath = 'F:/Development/images/'
 # This script uses Selenium for automatic control of the Chrome browser. Please download the appropriate version here https://chromedriver.chromium.org/downloads and specify the path.
 webdriverPath = 'F:/Development/GoogleImages-Scraper/chromedriver/chromedriver.exe'
 
@@ -64,6 +66,7 @@ def main():
     for lbl in labels:
         collectedURLs.clear()
         for addTerm in additionalSearchTerms:
+            print(f"Search for: {lbl + ' ' + addTerm}")
             combinedSearchTerm = (lbl + ' ' + addTerm).replace(' ', '+')
             url = 'https://www.google.com/search?tbm=isch&q=' + str(combinedSearchTerm) + '&hl=' + str(searchLanguage)
             # Collect all original source links of the found images
@@ -74,7 +77,11 @@ def main():
         for i, url in enumerate(collectedURLs):
             pathForImage = directoryPath + lbl + '/'
             fileName = lbl + '_' + str(i+1)
-            downloadImage(url, pathForImage, fileName, verbose=True)
+            try:
+                func_timeout.func_timeout(10, downloadImage, args=(url, pathForImage, fileName, True), kwargs=None)
+            except func_timeout.FunctionTimedOut:
+                print(f"Timeout while downloading {str(fileName)}: {url}")
+                pass
 
     # Close driver for Chrome
     wd.quit()
@@ -154,6 +161,10 @@ def downloadImage(url, pathForImage, fileName, verbose):
     except HTTPError as err:
         # something wrong with url
         print(f'Unable to download image due to\n: {str(err)}')
+        print(f'URL of the image: {url}')
+    except:
+        # unhandled error
+        print(f'Unable to download image due to unhandled error')
         print(f'URL of the image: {url}')
 
     return None
