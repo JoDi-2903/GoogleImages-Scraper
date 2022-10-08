@@ -10,6 +10,7 @@ The "GoogleImages-Scraper" is a tool for automatic download of photos from Googl
 labels = ['parsley', 'chives']
 additionalSearchTerms = ['', 'plant', 'leaves', 'garden']
 maxImagesPerSearchTerm = 10
+searchLanguage = 'en'
 delay = 0.2
 downloadPath = 'images/'
 webdriverPath = 'F:/Development/GoogleImages-Scraper/chromedriver/chromedriver.exe'
