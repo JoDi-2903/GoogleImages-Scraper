@@ -12,7 +12,7 @@ additionalSearchTerms = ['', 'plant', 'leaves', 'garden']
 maxImagesPerSearchTerm = 10
 searchLanguage = 'en'
 delay = 0.2
-downloadPath = 'images/'
+downloadPath = 'F:/Development/images/'
 webdriverPath = 'F:/Development/GoogleImages-Scraper/chromedriver/chromedriver.exe'
 ```
 
