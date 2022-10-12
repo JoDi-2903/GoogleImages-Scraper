@@ -66,7 +66,7 @@ def main():
     for lbl in labels:
         collectedURLs.clear()
         for addTerm in additionalSearchTerms:
-            print(f"Search for: {lbl + ' ' + addTerm}")
+            print(f"Searching for: {lbl + ' ' + addTerm}")
             combinedSearchTerm = (lbl + ' ' + addTerm).replace(' ', '+')
             url = 'https://www.google.com/search?tbm=isch&q=' + str(combinedSearchTerm) + '&hl=' + str(searchLanguage)
             # Collect all original source links of the found images
@@ -84,6 +84,7 @@ def main():
                 pass
 
     # Close driver for Chrome
+    print("Downloading ended successfully.")
     wd.quit()
 
 
