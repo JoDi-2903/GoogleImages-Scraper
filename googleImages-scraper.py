@@ -2,14 +2,14 @@
 # *******************************
 # Author:        Jonathan Diebel
 # Creation date: 30.09.2022
-# Last change:   08.10.2022
+# Last change:   08.03.2023
 
 from fileinput import filename
 import time
 import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 import urllib.request
 from urllib.error import HTTPError
 from datetime import datetime
@@ -51,6 +51,9 @@ def main():
             print(f'Created directory: {str(lbl)}')
 
     # Set up driver for Chrome
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--log-level=3')
     wd = webdriver.Chrome(webdriverPath)
     wd.get('https://www.google.com/')
     # Close the cookie message if it is shown
